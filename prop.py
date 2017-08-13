@@ -24,7 +24,7 @@ def genProp(n):  # Generates radom formula with n symbols in prefix notation
 
 def getArgs(and_prop):
     if len(and_prop) < 3:
-        print('Parameter and_prop has incorrect length')
+        print('Parameter and_prop is too small')
     l_end = 1
     atoms_left = 1
     while l_end < len(and_prop):
@@ -37,6 +37,14 @@ def getArgs(and_prop):
             return [and_prop[1:l_end+1],and_prop[l_end+1:len(and_prop)]]
         l_end += 1
     return [None,None]
+
+def hasContr(Hyp,p):
+    for prop in Hyp:
+        if prop[0] == '~' and prop[1:] == p:
+            return True
+        elif p[0] == '~' and p[1:] == prop:
+            return True
+    return False
 
 #
 #and_ = '^'+genProp(randint(5,10))+genProp(randint(5,10))
