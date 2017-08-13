@@ -2,7 +2,7 @@ from random import randint
 from prop import genProp, getArgs, Rule
 
 prop_len = 10
-depth_param = 12 # d ~ 7, w ~ 4
+depth_param = 5 # 9: d ~ 7, w ~ 4
 
 root_prop = genProp(randint(5,prop_len))
 prop_stack = [root_prop]
@@ -22,6 +22,8 @@ while len(prop_stack) > 0:
             available_rules.append(Rule.AND_Intr)
         elif top[0] == '~':
             available_rules.append(Rule.NOT_Intr)
+        elif top in hypothesis:
+            available_rules.append(Rule.Hyp_Intr)
         
         new_rule = available_rules[randint(0,len(available_rules)-1)]
         if first_rule == None:
@@ -40,12 +42,12 @@ while len(prop_stack) > 0:
             prop_stack.append('^'+new_prop+top)
         elif new_rule == Rule.AND_Elim_R:
             new_prop = genProp(randint(5,prop_len/2))
-            prop_stack.append('^'+new_prop+top)
+            prop_stack.append('^'+top+new_prop)
         elif new_rule == Rule.AND_Intr:
             prop_left, prop_right = getArgs(top)
             prop_stack.append(prop_left)
             prop_stack.append(prop_right)
-        else:
+        elif new_rule != Rule.Hyp_Intr:
             print('Cant apply rule to prop',top,new_rule)
 
 print(root_prop,hypothesis,first_rule)
