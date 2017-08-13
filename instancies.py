@@ -1,10 +1,10 @@
 from random import randint
 from prop import genProp, getArgs, hasContr, Rule
 
-prop_len = 3
+prop_len = 4
 depth_param = 2 # 9: d ~ 7, w ~ 4
 
-root_prop = genProp(randint(3,prop_len))
+root_prop = genProp(randint(1,prop_len))
 prop_stack = [root_prop]
 hypothesis = []
 first_rule = None
@@ -38,14 +38,14 @@ while len(prop_stack) > 0:
             prop_stack.append('F')
             hypothesis.append(top[1:]) #
         elif new_rule == Rule.NOT_Elim:
-            new_prop = genProp(randint(3,prop_len))
+            new_prop = genProp(randint(1,prop_len))
             prop_stack.append(new_prop)
             prop_stack.append('~'+new_prop)
         elif new_rule == Rule.AND_Elim_L:
-            new_prop = genProp(randint(3,prop_len))
+            new_prop = genProp(randint(1,prop_len))
             prop_stack.append('^'+new_prop+top)
         elif new_rule == Rule.AND_Elim_R:
-            new_prop = genProp(randint(3,prop_len))
+            new_prop = genProp(randint(1,prop_len))
             prop_stack.append('^'+top+new_prop)
         elif new_rule == Rule.AND_Intr:
             prop_left, prop_right = getArgs(top)
