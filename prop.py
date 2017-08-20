@@ -38,8 +38,15 @@ def getArgs(and_prop):
         l_end += 1
     return [None,None]
 
+def isNeg(a,b):
+    if len(a) > 1 and a[0] == '~' and a[1:] == b:
+        return True
+    return False
+
 def hasContr(Hyp,p):
     for prop in Hyp:
+        if len(p) < 2:
+            continue
         if prop[0] == '~' and prop[1:] == p:
             return True
         elif p[0] == '~' and p[1:] == prop:
