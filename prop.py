@@ -63,9 +63,9 @@ class Rule(Enum):
     AND_Elim_L = 0
     AND_Elim_R = 1
     AND_Intr = 2
-    NOT_Elim = 3
-    NOT_Intr = 4
-    F_Elim = 5
+    NOT_Intr = 3
+    F_Elim = 4
+    NOT_Elim = 5
     Hyp_Intr = 6
 
 #class Prop:
