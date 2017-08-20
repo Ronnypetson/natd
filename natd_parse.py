@@ -1,8 +1,8 @@
 import numpy
 
-input_len = 26  # 20 var, 6 special
+input_len = 25  # 20 var, 5 special
 output_len = 5  # rule identifier
-char_map = {'~':20,'^':21,'F':22,',':23,'>':24,':':25}
+char_map = {'~':20,'^':21,'F':22,',':23,'>':24}
 
 def char_index(c):
     ordc = ord(c)
@@ -25,4 +25,15 @@ def one_hot_rule(i):
     if i >= 0 and i < output_len:
         vec[i] = 1.0
     return vec
+
+def get_seq(s):
+    x = []
+    y = []
+    for i in range(len(s)):
+        if s[i] == ':':
+            rule = ord(s[i+1])-ord('0')
+            y.append(one_hot_rule(rule))
+            break
+        x.append(one_hot_char(s[i]))
+    return x,y
 
