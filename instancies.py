@@ -7,7 +7,7 @@ from prop import genProp, getArgs, hasContr, isNeg, Rule
 prop_len = 10
 gen_len = prop_len-5
 depth_param = 2
-num_instancies = 10000
+num_instancies = 10000 #
 
 #
 for k in range(num_instancies):
