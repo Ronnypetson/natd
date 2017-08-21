@@ -4,12 +4,13 @@ from prop import genProp, getArgs, hasContr, isNeg, Rule
 
 # Hyperparameters
 # Small trees: prop_len = 4, depth_param = 1, gen_len = prop_len - 2
-prop_len = 5
-gen_len = prop_len-2
+prop_len = 10
+gen_len = prop_len-5
 depth_param = 2
+num_instancies = 10000
 
 #
-for k in range(1000000):
+for k in range(num_instancies):
     root_prop = genProp(randint(1,prop_len))
     prop_stack = [root_prop]
     hypothesis = []
