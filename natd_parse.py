@@ -26,14 +26,16 @@ def one_hot_rule(i):
         vec[i] = 1.0
     return vec
 
-def get_seq(s):
-    x = []
-    y = []
-    for i in range(len(s)):
-        if s[i] == ':':
-            rule = ord(s[i+1])-ord('0')
-            y.append(one_hot_rule(rule))
-            break
-        x.append(one_hot_char(s[i]))
-    return x,y
+def get_seq(s, seq_len):    # returns padded sequence
+    x = [0.0]*input_len*seq_len
+    y = None
+    p = len(s)-3
+    if p > seq_len:
+        return None,None
+    for i in range(p):
+        x[i*input_len+char_index(s[i])] = 1.0  # input is squashed
+    if s[p] == ':':
+        rule = ord(s[p+1])-ord('0')
+        y = one_hot_rule(rule)
+    return [x],[y]
 
