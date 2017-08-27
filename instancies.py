@@ -8,7 +8,7 @@ prop_len = 8
 gen_len = prop_len-4
 depth_param = 1
 and_rule_param = 20
-num_instancies = 100000 #
+num_instancies = 1000000 #
 
 #
 for k in range(num_instancies):
