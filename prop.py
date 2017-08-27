@@ -44,13 +44,18 @@ def isNeg(a,b):
     return False
 
 def hasContr(Hyp,p):
-    for prop in Hyp:
-        if len(p) < 2:
-            continue
-        if prop[0] == '~' and prop[1:] == p:
-            return True
-        elif p[0] == '~' and p[1:] == prop:
-            return True
+    if len(p) < 2:
+        for prop in Hyp:
+            if len(prop) < 2:
+                continue
+            elif prop[0] == '~' and prop[1:] == p:
+                return True
+    else:
+        for prop in Hyp:
+            if len(prop) < 2 and p[0] == '~' and p[1:] == prop:
+                return True
+            elif (p[0] == '~' and p[1:] == prop) or (prop[0] == '~' and prop[1:] == p):
+                return True
     return False
 
 #

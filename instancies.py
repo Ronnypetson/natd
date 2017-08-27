@@ -4,10 +4,11 @@ from prop import genProp, getArgs, hasContr, isNeg, Rule
 
 # Hyperparameters
 # Small trees: prop_len = 4, depth_param = 1, gen_len = prop_len - 2
-prop_len = 10
-gen_len = prop_len-5
-depth_param = 2
-num_instancies = 10000 #
+prop_len = 8
+gen_len = prop_len-4
+depth_param = 1
+and_rule_param = 20
+num_instancies = 100000 #
 
 #
 for k in range(num_instancies):
@@ -20,7 +21,7 @@ for k in range(num_instancies):
         top = prop_stack.pop()
         virt_hyp.pop()
         new_rule = None
-        if randint(0,depth_param) == 0 and top != 'F' and not hasContr(hypothesis,top) and not top == root_prop:    # Check if top can be a hypothesis
+        if randint(0,depth_param) == 0 and top != 'F' and (not hasContr(hypothesis,top)) and top != root_prop:    # Check if top can be a hypothesis
             new_rule = Rule.Hyp_Intr
             if first_rule == None:
                 first_rule = new_rule
@@ -32,14 +33,16 @@ for k in range(num_instancies):
             elif top == 'F':
                 available_rules = [Rule.NOT_Elim]
             elif top[0] == '^':
-                available_rules = [Rule.F_Elim,Rule.AND_Elim_L,Rule.AND_Elim_R,Rule.AND_Intr]
+                available_rules = [Rule.AND_Elim_L,Rule.AND_Elim_R,Rule.AND_Intr,Rule.F_Elim]
             elif top[0] == '~':
-                available_rules = [Rule.F_Elim,Rule.AND_Elim_L,Rule.AND_Elim_R,Rule.NOT_Intr]
+                available_rules = [Rule.AND_Elim_L,Rule.AND_Elim_R,Rule.F_Elim,Rule.NOT_Intr]
             else:
-                available_rules = [Rule.F_Elim,Rule.AND_Elim_L,Rule.AND_Elim_R]
+                available_rules = [Rule.AND_Elim_L,Rule.AND_Elim_R,Rule.F_Elim]
             
-            new_rule = available_rules[randint(0,len(available_rules)-1)]
-            if new_rule == Rule.AND_Intr or new_rule == Rule.AND_Elim_L or new_rule == Rule.AND_Elim_R:   # Assignes low probability for AND_Intr
+            choose_and = randint(0,and_rule_param)
+            if choose_and == 1 and len(available_rules) > 1:
+                new_rule = available_rules[choose_and%3]
+            else:
                 new_rule = available_rules[randint(0,len(available_rules)-1)]
             
             if first_rule == None:
