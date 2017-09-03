@@ -1,7 +1,9 @@
 from __future__ import print_function
 from natd_parse import get_seq, input_len, output_len
+from random import randint
 import numpy as np
 import tensorflow as tf
+import os.path
 
 # Use batch size 1 first
 # Then group sequences of same length and batch them separately
@@ -10,12 +12,21 @@ import tensorflow as tf
 # output_dim = (batch_size,1,5)
 
 # Load instancies from text
-filename = 'inst_10E6.txt'
+filename = 'inst_10E5.txt'
+model_name = 'lstm_64'
 lstm_size = 64
-batch_size = 2
+batch_size = 16
 seq_len = 60
 learning_rate = 0.001
 seq_lengths = None
+  
+def load_model(sess):
+    if os.path.isfile(model_name+'.meta'):
+        saver = tf.train.import_meta_graph(model_name+'.meta')
+        saver.restore(sess,tf.train.latest_checkpoint('./'))
+        return saver
+    else:
+        return None
 
 def RNN(x, weights, biases):
     x = tf.reshape(x,[batch_size,seq_len,input_len])
@@ -25,7 +36,7 @@ def RNN(x, weights, biases):
     rnn_cell = tf.contrib.rnn.BasicLSTMCell(lstm_size)
     #rnn_cell = tf.contrib.rnn.MultiRNNCell([tf.contrib.rnn.BasicLSTMCell(lstm_size),tf.contrib.rnn.BasicLSTMCell(lstm_size)])
     # output and state
-    outputs, states = tf.contrib.rnn.static_rnn(rnn_cell,x,dtype=tf.float32,sequence_length=seq_lengths) # [seq_len]*batch_size
+    outputs, states = tf.contrib.rnn.static_rnn(rnn_cell,x,dtype=tf.float32) # [seq_len]*batch_size sequence_length=seq_lengths
     # use only the last output
     #outputs = tf.stack(outputs)
     #outputs = tf.transpose(outputs, [1,0,2])
@@ -49,13 +60,25 @@ optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
 sess = tf.Session()
 with open(filename) as f:
     sess.run(tf.global_variables_initializer())
-    mean_loss = 0.0
+    #
+    saver = load_model(sess)
+    if saver == None:
+        saver = tf.train.Saver()
+    #
     lines = f.readlines()
-    for k in range(len(lines)-batch_size):
-        x,y,seq_lengths = get_seq(lines,seq_len,k,batch_size)
+    mean_loss = 0
+    data_len = len(lines)
+    for k in range(data_len-batch_size):
+        x,y = get_seq(lines,seq_len,randint(0,data_len-batch_size),batch_size)
         if x != None and y != None:
             _, loss, onehot_pred = sess.run([optimizer,cost,model], feed_dict={X: x, Y: y})
-            mean_loss += loss
-            if k%100 == 0:
-                print(mean_loss/(k+1))  # ,onehot_pred,y
+            if k%100 == 99:
+                print(mean_loss/100)  # ,onehot_pred,y
+                print(onehot_pred[0])
+                print(y[0])
+                mean_loss = 0
+            else:
+                mean_loss += loss
+            if k%2000 == 0:
+                saver.save(sess,model_name)
 
